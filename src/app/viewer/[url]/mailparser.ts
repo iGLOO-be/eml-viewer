@@ -1,5 +1,3 @@
-"use server";
-
 import { simpleParser } from "mailparser";
 
 const tryFetch = async (url: string) => {
@@ -19,7 +17,6 @@ const tryFetch = async (url: string) => {
 };
 
 export const parseEmail = async (url: string) => {
-  console.log(url);
   const { body, error } = await tryFetch(url);
   if (error) {
     return { error };
@@ -32,10 +29,5 @@ export const parseEmail = async (url: string) => {
     };
   }
   const email = await simpleParser(body);
-  console.log(
-    email,
-    Array.from(email.headers, ([name, value]) => ({ name, value })),
-    Object.entries(email.headers)
-  );
   return { email };
 };
