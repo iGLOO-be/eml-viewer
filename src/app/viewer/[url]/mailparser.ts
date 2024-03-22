@@ -32,5 +32,10 @@ export const parseEmail = async (url: string) => {
     };
   }
   const email = await simpleParser(body);
+  console.log(
+    email,
+    Array.from(email.headers, ([name, value]) => ({ name, value })),
+    Object.entries(email.headers)
+  );
   return { email };
 };
