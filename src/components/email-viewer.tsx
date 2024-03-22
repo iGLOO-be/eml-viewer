@@ -85,7 +85,7 @@ const AttachmentList = ({
   <ul className="flex gap-2">
     {attachments.map((attachment, i) => (
       <li key={i} className="flex items-center gap-2">
-        <Badge>
+        <Badge className="hover:underline" color="gray-500">
           <a
             href={`data:application/octet-stream;base64,${attachment.content.toString(
               "base64"
