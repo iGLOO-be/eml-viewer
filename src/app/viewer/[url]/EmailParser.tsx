@@ -3,7 +3,7 @@ import { ErrorView } from "./ErrorView";
 import { parseEmail } from "./mailparser";
 
 export async function EmailParser({ url }: { url: string }) {
-  const { email, error } = await parseEmail(url);
+  const { error, email } = await parseEmail(url);
   return (
     <>
       {error && <ErrorView error={error} />}
