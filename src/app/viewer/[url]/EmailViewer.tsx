@@ -37,7 +37,14 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
 const Header = ({ email }: { email: ParsedMail }) => (
   <div className="flex items-start gap-4 pb-2">
     <div className="grid gap-1 text-sm">
-      <div className="font-semibold">{email.from?.text}</div>
+      {email.from?.html && (
+        <div
+          className="font-semibold"
+          dangerouslySetInnerHTML={{
+            __html: email.from.html,
+          }}
+        />
+      )}
       <RecipientList email={email} />
       <div className="font-semibold">{email.subject}</div>
     </div>
@@ -48,8 +55,7 @@ const Header = ({ email }: { email: ParsedMail }) => (
 );
 
 const RecipientList = ({ email }: { email: ParsedMail }) => {
-  const addressToString = (address: ParsedMail["from"]) =>
-    typeof address === "string" ? address : address?.text;
+  const addressToString = (address: ParsedMail["from"]) => address?.html;
   const recipients = (
     [
       [email.to, "To: "],
@@ -60,11 +66,12 @@ const RecipientList = ({ email }: { email: ParsedMail }) => {
   )
     .map(([addresses, label]) => {
       return [
-        Array.isArray(addresses)
+        (Array.isArray(addresses)
           ? addresses.map(addressToString)
           : addresses
           ? [addressToString(addresses)]
-          : [],
+          : []
+        ).filter((address) => address !== undefined) as string[],
         label,
       ] as const;
     })
@@ -77,7 +84,11 @@ const RecipientList = ({ email }: { email: ParsedMail }) => {
             {addresses.map((address, i) => (
               <li key={i}>
                 <span className="font-semibold">{label}</span>
-                {address}
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: address,
+                  }}
+                />
               </li>
             ))}
           </ul>
