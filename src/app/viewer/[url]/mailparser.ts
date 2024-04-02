@@ -1,8 +1,11 @@
 import { simpleParser } from "mailparser";
+import { cache } from "react";
 
 const tryFetch = async (url: string) => {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      cache: "force-cache",
+    });
     return {
       body: await response.text(),
     };
@@ -16,7 +19,8 @@ const tryFetch = async (url: string) => {
   }
 };
 
-export const parseEmail = async (url: string) => {
+export const parseEmail = cache(async (url: string) => {
+  // await new Promise((resolve) => setTimeout(resolve, 1000));
   const { body, error } = await tryFetch(url);
   if (error) {
     return { error };
@@ -30,4 +34,4 @@ export const parseEmail = async (url: string) => {
   }
   const email = await simpleParser(body);
   return { email };
-};
+});
