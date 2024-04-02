@@ -20,7 +20,6 @@ const tryFetch = async (url: string) => {
 };
 
 export const parseEmail = cache(async (url: string) => {
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
   const { body, error } = await tryFetch(url);
   if (error) {
     return { error };
