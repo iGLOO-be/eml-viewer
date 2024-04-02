@@ -11,7 +11,7 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
         <RecipientList email={email} />
         <div className="font-semibold">{email.subject}</div>
       </div>
-      <div className="ml-auto text-xs text-gray-500">
+      <div className="ml-auto text-xs text-gray-500 dark:text-gray-200">
         {email.date?.toLocaleDateString()} {email.date?.toLocaleTimeString()}
       </div>
     </div>
@@ -67,7 +67,7 @@ const RecipientList = ({ email }: { email: ParsedMail }) => {
     <div className="grid gap-1">
       {recipients.map(([addresses, label]) =>
         addresses.length > 0 ? (
-          <ul key={label} className="text-gray-500">
+          <ul key={label} className="text-gray-500 dark:text-gray-200">
             {addresses.map((address, i) => (
               <li key={i}>
                 <span className="font-semibold">{label}</span>
@@ -89,7 +89,7 @@ const AttachmentList = ({
   <ul className="flex gap-2">
     {attachments.map((attachment, i) => (
       <li key={i} className="flex items-center gap-2">
-        <Badge className="hover:underline" color="gray-500">
+        <Badge className="hover:underline" variant="outline">
           <a
             href={`data:application/octet-stream;base64,${attachment.content.toString(
               "base64"
