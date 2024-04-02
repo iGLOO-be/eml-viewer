@@ -8,7 +8,7 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
     <Header email={email} />
     <Tabs className="flex flex-col flex-1" defaultValue="text">
       <TabsList className="w-full justify-start">
-        <TabsTrigger value="text">Text</TabsTrigger>
+        {email.textAsHtml && <TabsTrigger value="text">Text</TabsTrigger>}
         {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
         <TabsTrigger value="headers">Headers</TabsTrigger>
       </TabsList>
@@ -42,7 +42,7 @@ const Header = ({ email }: { email: ParsedMail }) => (
       <div className="font-semibold">{email.subject}</div>
     </div>
     <div className="ml-auto text-xs text-gray-500 dark:text-gray-200">
-      {email.date?.toLocaleDateString()} {email.date?.toLocaleTimeString()}
+      {email.date?.toLocaleString()}
     </div>
   </div>
 );
