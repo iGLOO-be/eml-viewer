@@ -4,18 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
 export const EmailViewer = ({ email }: { email: ParsedMail }) => (
-  <div className="flex flex-col flex-1 p-2 h-full">
-    <div className="flex items-start gap-4">
-      <div className="grid gap-1 text-sm">
-        <div className="font-semibold">{email.from?.text}</div>
-        <RecipientList email={email} />
-        <div className="font-semibold">{email.subject}</div>
-      </div>
-      <div className="ml-auto text-xs text-gray-500 dark:text-gray-200">
-        {email.date?.toLocaleDateString()} {email.date?.toLocaleTimeString()}
-      </div>
-    </div>
-    <Tabs className="flex flex-col flex-1 pt-2" defaultValue="text">
+  <div className="flex flex-col flex-1 h-full">
+    <Header email={email} />
+    <Tabs className="flex flex-col flex-1" defaultValue="text">
       <TabsList className="w-full justify-start">
         <TabsTrigger value="text">Text</TabsTrigger>
         {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
@@ -24,7 +15,6 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
       <TabsContent className="flex-1" value="text">
         <AttachmentList attachments={email.attachments} />
         <div
-          className="pt-2"
           dangerouslySetInnerHTML={{
             __html: email.textAsHtml || "",
           }}
@@ -32,12 +22,28 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
       </TabsContent>
       <TabsContent className="flex flex-col flex-1" value="html">
         <AttachmentList attachments={email.attachments} />
-        <iframe className="flex flex-1 pt-2 dark:bg-gray-300" srcDoc={email.html || ""} />
+        <iframe
+          className="flex flex-1 dark:bg-gray-300"
+          srcDoc={email.html || ""}
+        />
       </TabsContent>
       <TabsContent className="flex-1" value="headers">
         <HeaderList headers={email.headers} />
       </TabsContent>
     </Tabs>
+  </div>
+);
+
+const Header = ({ email }: { email: ParsedMail }) => (
+  <div className="flex items-start gap-4 pb-2">
+    <div className="grid gap-1 text-sm">
+      <div className="font-semibold">{email.from?.text}</div>
+      <RecipientList email={email} />
+      <div className="font-semibold">{email.subject}</div>
+    </div>
+    <div className="ml-auto text-xs text-gray-500 dark:text-gray-200">
+      {email.date?.toLocaleDateString()} {email.date?.toLocaleTimeString()}
+    </div>
   </div>
 );
 
@@ -86,7 +92,7 @@ const AttachmentList = ({
 }: {
   attachments: ParsedMail["attachments"];
 }) => (
-  <ul>
+  <ul className="pb-2">
     {attachments.map((attachment, i) => (
       <li key={i} className="pr-2 max-w-[400px] inline-block truncate">
         <Badge className="hover:underline" variant="outline">
@@ -96,7 +102,8 @@ const AttachmentList = ({
             )}`}
             download={attachment.filename}
           >
-            {attachment.filename || 'No filename'} ({prettyBytes(attachment.size)})
+            {attachment.filename || "No filename"} (
+            {prettyBytes(attachment.size)})
           </a>
         </Badge>
       </li>
