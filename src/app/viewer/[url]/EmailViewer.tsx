@@ -32,7 +32,7 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => (
       </TabsContent>
       <TabsContent className="flex flex-col flex-1" value="html">
         <AttachmentList attachments={email.attachments} />
-        <iframe className="flex flex-1 pt-2" srcDoc={email.html || ""} />
+        <iframe className="flex flex-1 pt-2 dark:bg-gray-300" srcDoc={email.html || ""} />
       </TabsContent>
       <TabsContent className="flex-1" value="headers">
         <HeaderList headers={email.headers} />
@@ -86,9 +86,9 @@ const AttachmentList = ({
 }: {
   attachments: ParsedMail["attachments"];
 }) => (
-  <ul className="flex gap-2">
+  <ul>
     {attachments.map((attachment, i) => (
-      <li key={i} className="flex items-center gap-2">
+      <li key={i} className="pr-2 max-w-[400px] inline-block truncate">
         <Badge className="hover:underline" variant="outline">
           <a
             href={`data:application/octet-stream;base64,${attachment.content.toString(
@@ -96,7 +96,7 @@ const AttachmentList = ({
             )}`}
             download={attachment.filename}
           >
-            {attachment.filename} ({prettyBytes(attachment.size)})
+            {attachment.filename || 'No filename'} ({prettyBytes(attachment.size)})
           </a>
         </Badge>
       </li>
