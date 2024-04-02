@@ -13,3 +13,5 @@ export default function ViewerPage({
     </Suspense>
   );
 }
+
+export const revalidate = 3600 * 24 * 7;
