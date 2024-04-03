@@ -105,7 +105,7 @@ const AttachmentList = ({
 }) => (
   <ul className="pb-2">
     {attachments.map((attachment, i) => (
-      <li key={i} className="pr-2 max-w-[400px] inline-block truncate">
+      <li key={i} className="pr-2 inline-block truncate">
         <Badge className="hover:underline" variant="outline">
           <a
             href={`data:application/octet-stream;base64,${attachment.content.toString(
