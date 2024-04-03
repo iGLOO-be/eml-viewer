@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/badge";
 export const EmailViewer = ({ email }: { email: ParsedMail }) => (
   <div className="flex flex-col flex-1 h-full">
     <Header email={email} />
-    <Tabs className="flex flex-col flex-1" defaultValue="text">
+    <Tabs
+      className="flex flex-col flex-1"
+      defaultValue={email.textAsHtml ? "text" : email.html ? "html" : "headers"}
+    >
       <TabsList className="w-full justify-start">
         {email.textAsHtml && <TabsTrigger value="text">Text</TabsTrigger>}
         {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
