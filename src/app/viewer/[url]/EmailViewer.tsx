@@ -1,41 +1,49 @@
 import type { ParsedMail } from "mailparser";
-import prettyBytes from "pretty-bytes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { AttachmentList } from "../../../components/AttachmentList";
 
-export const EmailViewer = ({ email }: { email: ParsedMail }) => (
-  <div className="flex flex-col flex-1 h-full">
-    <Header email={email} />
-    <Tabs
-      className="flex flex-col flex-1"
-      defaultValue={email.textAsHtml ? "text" : email.html ? "html" : "headers"}
-    >
-      <TabsList className="w-full justify-start">
-        {email.textAsHtml && <TabsTrigger value="text">Text</TabsTrigger>}
-        {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
-        <TabsTrigger value="headers">Headers</TabsTrigger>
-      </TabsList>
-      <TabsContent className="flex-1" value="text">
-        <AttachmentList attachments={email.attachments} />
-        <div
-          dangerouslySetInnerHTML={{
-            __html: email.textAsHtml || "",
-          }}
-        />
-      </TabsContent>
-      <TabsContent className="flex flex-col flex-1" value="html">
-        <AttachmentList attachments={email.attachments} />
-        <iframe
-          className="flex flex-1 dark:bg-gray-300"
-          srcDoc={email.html || ""}
-        />
-      </TabsContent>
-      <TabsContent className="flex-1" value="headers">
-        <HeaderList headers={email.headers} />
-      </TabsContent>
-    </Tabs>
-  </div>
-);
+export const EmailViewer = ({ email }: { email: ParsedMail }) => {
+  const attachments = email.attachments.map((attachment) => ({
+    content: attachment.content.toString("base64"),
+    filename: attachment.filename,
+    size: attachment.content.length,
+  }));
+  return (
+    <div className="flex flex-col flex-1 h-full">
+      <Header email={email} />
+      <Tabs
+        className="flex flex-col flex-1"
+        defaultValue={
+          email.textAsHtml ? "text" : email.html ? "html" : "headers"
+        }
+      >
+        <TabsList className="w-full justify-start">
+          {email.textAsHtml && <TabsTrigger value="text">Text</TabsTrigger>}
+          {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
+          <TabsTrigger value="headers">Headers</TabsTrigger>
+        </TabsList>
+        <TabsContent className="flex-1" value="text">
+          <AttachmentList attachments={attachments} />
+          <div
+            dangerouslySetInnerHTML={{
+              __html: email.textAsHtml || "",
+            }}
+          />
+        </TabsContent>
+        <TabsContent className="flex flex-col flex-1" value="html">
+          <AttachmentList attachments={attachments} />
+          <iframe
+            className="flex flex-1 dark:bg-gray-300"
+            srcDoc={email.html || ""}
+          />
+        </TabsContent>
+        <TabsContent className="flex-1" value="headers">
+          <HeaderList headers={email.headers} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
 
 const Header = ({ email }: { email: ParsedMail }) => (
   <div className="flex items-start gap-4 pb-2">
@@ -100,30 +108,6 @@ const RecipientList = ({ email }: { email: ParsedMail }) => {
     </div>
   );
 };
-
-const AttachmentList = ({
-  attachments,
-}: {
-  attachments: ParsedMail["attachments"];
-}) => (
-  <ul className="pb-2">
-    {attachments.map((attachment, i) => (
-      <li key={i} className="pr-2 inline-block truncate">
-        <Badge className="hover:underline" variant="outline">
-          <a
-            href={`data:application/octet-stream;base64,${attachment.content.toString(
-              "base64"
-            )}`}
-            download={attachment.filename}
-          >
-            {attachment.filename || "No filename"} (
-            {prettyBytes(attachment.size)})
-          </a>
-        </Badge>
-      </li>
-    ))}
-  </ul>
-);
 
 const HeaderList = ({ headers }: { headers: ParsedMail["headers"] }) => (
   <ul className="grid gap-2">
