@@ -59,7 +59,7 @@ const Header = ({ email }: { email: ParsedMail }) => (
       <RecipientList email={email} />
       <div className="font-semibold text-base">{email.subject}</div>
     </div>
-    <div className="ml-auto text-xs text-gray-500 dark:text-gray-200">
+    <div className="ml-auto text-xs text-gray-500 whitespace-nowrap dark:text-gray-200">
       {email.date?.toLocaleString()}
     </div>
   </div>
