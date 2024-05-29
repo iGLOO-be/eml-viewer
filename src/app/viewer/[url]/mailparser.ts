@@ -1,4 +1,4 @@
-import { simpleParser } from "mailparser";
+import { ParsedMail, simpleParser } from "mailparser";
 import { cache } from "react";
 
 const tryFetch = async (url: string) => {
@@ -31,6 +31,31 @@ export const parseEmail = cache(async (url: string) => {
       },
     };
   }
-  const email = await simpleParser(body);
-  return { email };
+  return {
+    email: await parseEmailAndAttachments(body),
+  };
 });
+
+const parseEmailAndAttachments = async (
+  body: string | Buffer
+): Promise<ParsedMail> => {
+  const email = await simpleParser(body);
+  return {
+    ...email,
+    attachments: (
+      await Promise.all(
+        email.attachments.map(async (attachment) => {
+          if (attachment.contentType === "message/rfc822") {
+            return [
+              attachment,
+              ...(await parseEmailAndAttachments(attachment.content))
+                .attachments,
+            ];
+          } else {
+            return attachment;
+          }
+        })
+      )
+    ).flat(),
+  };
+};
