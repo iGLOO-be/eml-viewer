@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { EmailParser } from "./EmailParser";
+import { EmailParser } from "../EmailParser";
 import { LoaderView } from "@/components/LoaderView";
 
 export default function ViewerPage({
@@ -9,7 +9,7 @@ export default function ViewerPage({
 }) {
   return (
     <Suspense fallback={<LoaderView />}>
-      <EmailParser url={decodeURIComponent(url)} type="eml" />
+      <EmailParser url={decodeURIComponent(url)} type="msg" />
     </Suspense>
   );
 }
