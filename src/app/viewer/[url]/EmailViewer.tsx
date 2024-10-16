@@ -1,8 +1,8 @@
-import type { ParsedMail } from "mailparser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AttachmentList } from "../../../components/AttachmentList";
+import { SimplifiedParsedMail } from "./mailparser";
 
-export const EmailViewer = ({ email }: { email: ParsedMail }) => {
+export const EmailViewer = ({ email }: { email: SimplifiedParsedMail }) => {
   const attachments = email.attachments.map((attachment) => ({
     content: attachment.content.toString("base64"),
     filename: attachment.filename,
@@ -34,7 +34,7 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => {
           <AttachmentList attachments={attachments} />
           <iframe
             className="flex flex-1 dark:bg-gray-300"
-            srcDoc={email.html || ""}
+            srcDoc={typeof email.html === "string" ? email.html : ""}
           />
         </TabsContent>
         <TabsContent className="flex-1" value="headers">
@@ -45,7 +45,7 @@ export const EmailViewer = ({ email }: { email: ParsedMail }) => {
   );
 };
 
-const Header = ({ email }: { email: ParsedMail }) => (
+const Header = ({ email }: { email: SimplifiedParsedMail }) => (
   <div className="flex items-start gap-4 pb-2">
     <div className="grid gap-1 text-sm">
       {email.from?.html && (
@@ -65,8 +65,9 @@ const Header = ({ email }: { email: ParsedMail }) => (
   </div>
 );
 
-const RecipientList = ({ email }: { email: ParsedMail }) => {
-  const addressToString = (address: ParsedMail["from"]) => address?.html;
+const RecipientList = ({ email }: { email: SimplifiedParsedMail }) => {
+  const addressToString = (address: SimplifiedParsedMail["from"]) =>
+    address?.html;
   const recipients = (
     [
       [email.to, "To: "],
@@ -109,7 +110,11 @@ const RecipientList = ({ email }: { email: ParsedMail }) => {
   );
 };
 
-const HeaderList = ({ headers }: { headers: ParsedMail["headers"] }) => (
+const HeaderList = ({
+  headers,
+}: {
+  headers: SimplifiedParsedMail["headers"];
+}) => (
   <ul className="grid gap-2">
     {Array.from(headers, ([name, value]) => ({ name, value })).map(
       ({ name, value }, i) => (
