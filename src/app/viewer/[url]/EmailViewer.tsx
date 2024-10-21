@@ -8,6 +8,7 @@ export const EmailViewer = ({ email }: { email: SimplifiedParsedMail }) => {
     filename: attachment.filename,
     size: attachment.content.length,
   }));
+  const hasHeaders = email.headers.size > 0;
   return (
     <div className="flex flex-col flex-1 h-full">
       <Header email={email} />
@@ -20,7 +21,7 @@ export const EmailViewer = ({ email }: { email: SimplifiedParsedMail }) => {
         <TabsList className="w-full justify-start">
           {email.textAsHtml && <TabsTrigger value="text">Text</TabsTrigger>}
           {email.html && <TabsTrigger value="html">HTML</TabsTrigger>}
-          <TabsTrigger value="headers">Headers</TabsTrigger>
+          {hasHeaders && <TabsTrigger value="headers">Headers</TabsTrigger>}
         </TabsList>
         <TabsContent className="flex-1" value="text">
           <AttachmentList attachments={attachments} />
