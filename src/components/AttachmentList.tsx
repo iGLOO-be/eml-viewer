@@ -44,7 +44,7 @@ export const AttachmentList = ({
               title={attachment.filename}
             >
               {truncateFilename(attachment.filename || "No filename")} (
-              {prettyBytes(attachment.size)})
+              {prettyBytes(attachment.size || 0)})
             </a>
           </Badge>
         </li>

@@ -19,54 +19,44 @@ export type SimplifiedParsedMail = {
 };
 
 const nl2br = (str: string) => str.replace(/\n/g, "<br />");
+const recipientToAddressObject = (
+  recipient: Pick<FieldsData, "name" | "smtpAddress">
+) => ({
+  text: recipient.name || recipient.smtpAddress || "Unknown",
+  html: `<a href="mailto:${escape(recipient.smtpAddress)}">${escape(
+    recipient.name
+      ? `${recipient.name} <${recipient.smtpAddress}>`
+      : recipient.smtpAddress
+  )}</a>`,
+  value: [
+    {
+      address: recipient.smtpAddress,
+      name: recipient.name || recipient.smtpAddress || "Unknown",
+    },
+  ],
+});
+const recipientsToAddressObject = (recipients: FieldsData[]) =>
+  recipients?.map(recipientToAddressObject) || [];
 
 const msgParser = async (msg: ArrayBuffer): Promise<SimplifiedParsedMail> => {
   const reader = new MsgReader(msg);
   const fileData = await reader.getFileData();
-  const recipientToAddressObject = (recipients: FieldsData[]) =>
-    recipients?.map((recipient) => ({
-      text: recipient.name || recipient.smtpAddress || "Unknown",
-      html: escape(
-        recipient.name
-          ? `${recipient.name} <${recipient.smtpAddress}>`
-          : recipient.smtpAddress
-      ),
-      value: [
-        {
-          address: recipient.smtpAddress,
-          name: recipient.name || recipient.smtpAddress || "Unknown",
-        },
-      ],
-    }));
   return {
-    textAsHtml: fileData.html
+    html: fileData.html
       ? new TextDecoder().decode(fileData.html)
       : nl2br(fileData.body || ""),
     headers: new Map(), // fileData.headers,
-    from: {
-      text: fileData.senderName || fileData.senderSmtpAddress || "Unknown",
-      html: escape(
-        fileData.senderName
-          ? `${fileData.senderName} <${fileData.senderSmtpAddress}>`
-          : fileData.senderSmtpAddress
-      ),
-      value: fileData.senderSmtpAddress
-        ? [
-            {
-              address: fileData.senderSmtpAddress,
-              name:
-                fileData.senderName || fileData.senderSmtpAddress || "Unknown",
-            },
-          ]
-        : [],
-    },
-    to: recipientToAddressObject(
+    from: recipientToAddressObject({
+      name: fileData.senderName,
+      smtpAddress: fileData.senderSmtpAddress,
+    }),
+    to: recipientsToAddressObject(
       fileData.recipients?.filter((r) => r.recipType === "to") || []
     ),
-    cc: recipientToAddressObject(
+    cc: recipientsToAddressObject(
       fileData.recipients?.filter((r) => r.recipType === "cc") || []
     ),
-    bcc: recipientToAddressObject(
+    bcc: recipientsToAddressObject(
       fileData.recipients?.filter((r) => r.recipType === "bcc") || []
     ),
     replyTo: undefined,
@@ -80,9 +70,9 @@ const msgParser = async (msg: ArrayBuffer): Promise<SimplifiedParsedMail> => {
         contentType: attachment.attachMimeTag || "application/octet-stream",
         size: attachment.contentLength || 0,
         content: Buffer.from(
-          new TextDecoder().decode(
+          (
             await reader.getAttachment(attachment).content
-          )
+          ).buffer
         ),
         related: false,
         type: "attachment",
