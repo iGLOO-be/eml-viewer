@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AttachmentList } from "../../../components/AttachmentList";
 import { SimplifiedParsedMail } from "./mailparser";
+import { DateFormat } from "@/components/DateFormat";
 
 export const EmailViewer = ({ email }: { email: SimplifiedParsedMail }) => {
   const attachments = email.attachments.map((attachment) => ({
@@ -61,7 +62,7 @@ const Header = ({ email }: { email: SimplifiedParsedMail }) => (
       <div className="font-semibold text-base">{email.subject}</div>
     </div>
     <div className="ml-auto text-xs text-gray-500 whitespace-nowrap dark:text-gray-200">
-      {email.date?.toLocaleString()}
+      {email.date && <DateFormat date={email.date} />}
     </div>
   </div>
 );
