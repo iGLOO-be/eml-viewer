@@ -20,4 +20,4 @@ export default async function ViewerPage(
   );
 }
 
-export const revalidate = 3600 * 24 * 7;
+export let revalidate = 3600 * 24 * 7;
