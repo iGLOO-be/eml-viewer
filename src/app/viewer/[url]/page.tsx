@@ -2,11 +2,17 @@ import { Suspense } from "react";
 import { EmailParser } from "./EmailParser";
 import { LoaderView } from "@/components/LoaderView";
 
-export default function ViewerPage({
-  params: { url },
-}: {
-  params: { url: string };
-}) {
+export default async function ViewerPage(
+  props: {
+    params: Promise<{ url: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    url
+  } = params;
+
   return (
     <Suspense fallback={<LoaderView />}>
       <EmailParser url={decodeURIComponent(url)} type="eml" />
@@ -14,4 +20,4 @@ export default function ViewerPage({
   );
 }
 
-export const revalidate = 3600 * 24 * 7;
+export let revalidate = 3600 * 24 * 7;
