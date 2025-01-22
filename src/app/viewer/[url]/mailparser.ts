@@ -2,6 +2,7 @@ import { Headers, ParsedMail, simpleParser } from "mailparser";
 import { cache } from "react";
 import MsgReader, { FieldsData } from "@kenjiuno/msgreader";
 import escape from "lodash/escape";
+import mime from "mime";
 
 export type MailTypes = "eml" | "msg";
 export type SimplifiedParsedMail = {
@@ -65,22 +66,45 @@ const msgParser = async (msg: ArrayBuffer): Promise<SimplifiedParsedMail> => {
       fileData.clientSubmitTime || fileData.messageDeliveryTime || 0
     ),
     attachments: await Promise.all(
-      fileData.attachments?.map(async (attachment) => ({
-        filename: attachment.fileName,
-        contentType: attachment.attachMimeTag || "application/octet-stream",
-        size: attachment.contentLength || 0,
-        content: Buffer.from(
-          (
-            await reader.getAttachment(attachment).content
-          ).buffer
-        ),
-        related: false,
-        type: "attachment",
-        checksum: "", // TODO
-        contentDisposition: "attachment",
-        headers: new Map(), // TODO
-        headerLines: [], // TODO
-      })) || []
+      fileData.attachments?.map(async (attachment) => {
+        let filename = attachment.fileName || attachment.name;
+        // Check if filename has extension
+        if (
+          filename &&
+          !filename.match(/\.[a-zA-Z0-9]+$/)
+
+        ) {
+          if (
+            attachment.innerMsgContentFields &&
+            attachment.innerMsgContentFields.dataType === "msg"
+          ) {
+            // Some attachments are actually messages embedded in the attachment
+            filename = filename.trim() + ".msg";
+          } else if (attachment.attachMimeTag) {
+            const extension = mime.getExtension(
+              attachment.attachMimeTag
+            );
+            if (extension) {
+              filename = filename.trim() + "." + extension;
+            }
+          }
+        }
+
+        return {
+          filename,
+          contentType: attachment.attachMimeTag || "application/octet-stream",
+          size: attachment.contentLength || 0,
+          content: Buffer.from(
+            (await reader.getAttachment(attachment).content).buffer
+          ),
+          related: false,
+          type: "attachment",
+          checksum: "", // TODO
+          contentDisposition: "attachment",
+          headers: new Map(), // TODO
+          headerLines: [], // TODO
+        };
+      }) || []
     ),
   };
 };
