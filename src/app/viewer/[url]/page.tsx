@@ -2,16 +2,14 @@ import { Suspense } from "react";
 import { EmailParser } from "./EmailParser";
 import { LoaderView } from "@/components/LoaderView";
 
-export default async function ViewerPage(
-  props: {
-    params: Promise<{ url: string }>;
-  }
-) {
+export default async function ViewerPage(props: {
+  params: Promise<{ url: string }>;
+}) {
   const params = await props.params;
 
-  const {
-    url
-  } = params;
+  const { url } = params;
+
+  console.log("DEBUG: url", url, decodeURIComponent(url));
 
   return (
     <Suspense fallback={<LoaderView />}>

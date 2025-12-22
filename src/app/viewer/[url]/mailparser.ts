@@ -151,6 +151,8 @@ const tryFetch = async (url: string) => {
 
 export const parseEmail = cache(async (url: string, type: MailTypes) => {
   const { body, error } = await tryFetch(url);
+  console.log("### DEBUG body", { body, error });
+
   if (error) {
     return { error };
   }
