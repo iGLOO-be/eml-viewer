@@ -19,7 +19,7 @@
     "lucide-react": "^0.473.0",
     "mailparser": "^3.7.2",
     "mime": "^4.0.6",
-    "next": "15.1.6",
+    "next": "15.1.11",
     "pretty-bytes": "^6.1.1",
     "react": "^19",
     "react-dom": "^19",
