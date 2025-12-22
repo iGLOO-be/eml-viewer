@@ -7,7 +7,7 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "frame-ancestors *; frame-src *; child-src *; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;",
+            value: "frame-ancestors *",
           },
         ],
       },
