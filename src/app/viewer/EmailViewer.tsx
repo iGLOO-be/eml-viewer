@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AttachmentList } from "../../../components/AttachmentList";
+import { AttachmentList } from "@/components/AttachmentList";
 import { SimplifiedParsedMail } from "./mailparser";
 import { DateFormat } from "@/components/DateFormat";
 
