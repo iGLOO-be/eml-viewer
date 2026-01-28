@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { EmailParser } from "../EmailParser";
+import { EmailParser } from "../../EmailParser";
 import { LoaderView } from "@/components/LoaderView";
 
 export default async function ViewerPage(

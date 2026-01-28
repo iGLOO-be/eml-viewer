@@ -119,7 +119,7 @@ const emlParser = async (eml: ArrayBuffer): Promise<SimplifiedParsedMail> => {
           if (attachment.contentType === "message/rfc822") {
             return [
               attachment,
-              ...(await parseEmailAndAttachments(attachment.content, "eml"))
+              ...(await parseEmailAndAttachments(attachment.content as any, "eml"))
                 .attachments,
             ];
           } else {

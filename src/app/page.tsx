@@ -12,7 +12,7 @@ export default function Home() {
       onSubmit={(e) => {
         e.preventDefault();
         const url = (e.target as any).url.value;
-        router.push(`/viewer/${encodeURIComponent(url)}`);
+        router.push(`/viewer?url=${encodeURIComponent(url)}`);
       }}
     >
       <div className="w-[60%]">
