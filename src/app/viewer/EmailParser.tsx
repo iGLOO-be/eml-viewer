@@ -12,7 +12,6 @@ export async function EmailParser({
   const { error, email } = await parseEmail(url, type);
   return (
     <>
-      <pre>{JSON.stringify({url}, null, 2)}</pre>
       {error && <ErrorView error={error} />}
       {email && <EmailViewer email={email} />}
     </>
