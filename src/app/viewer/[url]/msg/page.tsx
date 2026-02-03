@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { EmailParser } from "../../EmailParser";
 import { LoaderView } from "@/components/LoaderView";
+import { decodeUrl } from "@/lib/utils";
 
 export default async function ViewerPage(
   props: {
@@ -15,7 +16,7 @@ export default async function ViewerPage(
 
   return (
     <Suspense fallback={<LoaderView />}>
-      <EmailParser url={decodeURIComponent(url)} type="msg" />
+      <EmailParser url={decodeUrl(url)} type="msg" />
     </Suspense>
   );
 }
