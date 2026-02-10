@@ -14,7 +14,7 @@ export default async function ViewerPage(props: {
 
   return (
     <Suspense fallback={<LoaderView />}>
-      <EmailParser url={decodeURIComponent(rawUrl)} type="msg" />
+      <EmailParser url={rawUrl} type="msg" />
     </Suspense>
   );
 }
